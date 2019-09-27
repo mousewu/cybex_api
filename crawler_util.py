@@ -4,7 +4,7 @@ import os
 import pdb
 
 DB_NAME = "cybex"
-COLLECTION = "account"
+COLLECTION = "balance"
 
 
 def initMongo(client,index):

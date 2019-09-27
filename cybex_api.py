@@ -39,7 +39,7 @@ class Cybex_Api(object):
               self.url,
               data=json.dumps(payload),
               headers=self.headers).json()
-        # print(res)
+        #print(res)
         return res[key]
 
     def get_account_count(self):
@@ -60,13 +60,41 @@ class Cybex_Api(object):
                 e = crawler_util.insertMongo(self.mongo_client, result)
                 #print(result)
         else:
-            dd = list(range(57800,57891))
+            dd = list(range(57800,57890))
             accounts = ['1.2.' + str(x) for x in dd]
             result = self.get_accounts(accounts)
+            print(result)
             e = crawler_util.insertMongo(self.mongo_client, result)
+
+    def get_account_balances(self,asset,accounts):
+        result =self._rpcRequest('get_account_balances',[accounts,asset],'result')
+        return result
+
+    def parse_account_balances(self,all,assets):
+        if all:
+            total_no = self.get_account_count()
+            for i in tqdm.tqdm(range(total_no)):
+                account = '1.2.' + str(i)
+                result = self.get_account_balances(assets,account)
+                for x in result:
+                    x['id'] = account
+                    x['time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                #e = crawler_util.insertMongo(self.mongo_client, result)
+                print(result)
+        else:
+            dd = list(range(57800,57890))
+            accounts = ['1.2.' + str(x) for x in dd]
+            for account in accounts:
+                result = self.get_account_balances(assets,account)
+                for x in result:
+                    x['id'] = account
+                    x['time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                print(result)
+                #e = crawler_util.insertMongo(self.mongo_client, result)
 
 
 
 if __name__ == "__main__":
     cybex_api = Cybex_Api()
-    cybex_api.parse_get_accounts(False)
+    #cybex_api.parse_get_accounts(False)
+    cybex_api.parse_account_balances(True,["1.3.0","1.3.2","1.3.27","1.3.1384","1.3.1385"])
