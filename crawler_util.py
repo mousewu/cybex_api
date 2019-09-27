@@ -3,8 +3,8 @@ from collections import deque
 import os
 import pdb
 
-DB_NAME = "parity"
-COLLECTION = "replayTransactions"
+DB_NAME = "cybex"
+COLLECTION = "account"
 
 
 def initMongo(client,index):

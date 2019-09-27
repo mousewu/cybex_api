@@ -24,7 +24,7 @@ class Cybex_Api(object):
         logging.debug("Starting Crawler")
         self.url = url
         self.headers = {"content-type": "application/json"}
-        self.mongo_client = crawler_util.initMongo(MongoClient('mongodb://longhashdba:longhash123'+urllib.parse.quote('!@#')+'QAZ@localhost/parity'),"id")
+        self.mongo_client = crawler_util.initMongo(MongoClient('mongodb://root:longhash123'+urllib.parse.quote('!@#')+'QAZ@localhost/admin'),"id")
         self.delay = delay
 
     def _rpcRequest(self, method, params, key):
@@ -56,8 +56,8 @@ class Cybex_Api(object):
             dd = list(range(i * 100, (i + 1) * 100))
             accounts = ['1.2.' + str(x) for x in dd]
             result = self.get_accounts(accounts)
-            #e = crawler_util.insertMongo(self.mongo_client, result)
-            print(result)
+            e = crawler_util.insertMongo(self.mongo_client, result)
+            #print(result)
 
 
 if __name__ == "__main__":
