@@ -50,16 +50,22 @@ class Cybex_Api(object):
         result = self._rpcRequest('get_accounts',[accounts],'result')
         return result
 
-    def parse_get_accounts(self):
-        total_no = self.get_account_count()
-        for i in tqdm.tqdm(range(int(total_no / 100))):
-            dd = list(range(i * 100, (i + 1) * 100))
+    def parse_get_accounts(self,all):
+        if all:
+            total_no = self.get_account_count()
+            for i in tqdm.tqdm(range(int(total_no / 100))):
+                dd = list(range(i * 100, (i + 1) * 100))
+                accounts = ['1.2.' + str(x) for x in dd]
+                result = self.get_accounts(accounts)
+                e = crawler_util.insertMongo(self.mongo_client, result)
+                #print(result)
+        else:
+            dd = list(range(57800,57891))
             accounts = ['1.2.' + str(x) for x in dd]
             result = self.get_accounts(accounts)
-            #e = crawler_util.insertMongo(self.mongo_client, result)
-            print(result)
+            e = crawler_util.insertMongo(self.mongo_client, result)
 
 
 if __name__ == "__main__":
     cybex_api = Cybex_Api()
-    cybex_api.parse_get_accounts()
+    cybex_api.parse_get_accounts(False)
