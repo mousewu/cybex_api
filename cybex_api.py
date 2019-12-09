@@ -11,6 +11,10 @@ import time
 import tqdm
 import urllib.parse
 from datetime import datetime
+import random
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util import Retry
+
 sys.path.append(os.path.realpath(os.path.dirname(__file__)))
 
 
@@ -20,7 +24,7 @@ logging.basicConfig(filename=LOGFIL, level=logging.DEBUG)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 class Cybex_Api(object):
-    def __init__(self,url = "https://apihk.cybex.io",delay=0.5):
+    def __init__(self,url = ["https://apihk.cybex.io","https://hongkong.cybex.io","https://normal-hongkong.cybex.io"],delay=0.5):
         logging.debug("Starting Crawler")
         self.url = url
         self.headers = {"content-type": "application/json"}
@@ -35,8 +39,14 @@ class Cybex_Api(object):
             "id": 1
         }
         time.sleep(self.delay)
-        res = requests.post(
-              self.url,
+        url_id = random.randint(0,2)
+
+        s = requests.Session()
+        s.mount('https://', HTTPAdapter(
+            max_retries=Retry(total=5, method_whitelist=frozenset(['GET', 'POST']))))  # 设置 post()方法进行重访问
+
+        res = s.post(
+              self.url[url_id],
               data=json.dumps(payload),
               headers=self.headers).json()
         #print(res)
