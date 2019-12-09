@@ -20,7 +20,7 @@ logging.basicConfig(filename=LOGFIL, level=logging.DEBUG)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 class Cybex_Api(object):
-    def __init__(self,url = "https://hongkong.cybex.io/",delay=0.001):
+    def __init__(self,url = "https://apihk.cybex.io",delay=0.5):
         logging.debug("Starting Crawler")
         self.url = url
         self.headers = {"content-type": "application/json"}
@@ -79,8 +79,8 @@ class Cybex_Api(object):
                 for x in result:
                     x['id'] = account
                     x['time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                #e = crawler_util.insertMongo(self.mongo_client, result)
-                print(result)
+                e = crawler_util.insertMongo(self.mongo_client, result)
+                #print(result)
         else:
             dd = list(range(57800,57890))
             accounts = ['1.2.' + str(x) for x in dd]
@@ -89,8 +89,8 @@ class Cybex_Api(object):
                 for x in result:
                     x['id'] = account
                     x['time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                print(result)
-                #e = crawler_util.insertMongo(self.mongo_client, result)
+                #print(result)
+                e = crawler_util.insertMongo(self.mongo_client, result)
 
 
 
